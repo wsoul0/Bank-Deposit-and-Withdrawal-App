@@ -1,0 +1,87 @@
+def get_info():
+   print("Welcome to the Python Bank")
+   name = input("Hello, what is your name: ").title()
+   savings = round(float(input("How much money would you like to set up your savings account with: ")), 2)
+   checking = round(float(input("How much money would you like to set up your checking account with: ")), 2)
+
+
+   account = {
+       "name": name,
+       "savings": savings,
+       "checking": checking
+   }
+   return account
+
+
+
+
+def make_deposit(account, account_type, amount):
+   account_type = account_type.lower()
+   if account_type in ["savings", "checking"]:
+       account[account_type] = round(account[account_type] + amount, 2)
+       print(f"\nDeposited ${amount:.2f} into {account['name']}'s {account_type} account")
+   else:
+       print("\nInvalid account type for deposit")
+
+
+
+
+def make_withdrawal(account, account_type, amount):
+   account_type = account_type.lower()
+   if account_type in ["savings", "checking"]:
+       if account[account_type] - amount >= 0:
+           account[account_type] = round(account[account_type] - amount, 2)
+           print(f"\nWithdrew ${amount:.2f} from {account['name']}'s {account_type} account")
+       else:
+           print(f"\nSorry, you’re broke — withdrawing ${amount:.2f} would make your balance negative")
+   else:
+       print("\nInvalid account type for withdrawal")
+
+
+#I have started to use f" strings instead of print because I find them easier to use when I have to print out variables
+def display_info(account):
+   print("\nCurrent Account Information:")
+   print(f"Name: {account['name']}")
+   print(f"Savings: ${account['savings']:.2f}")
+   print(f"Checking: ${account['checking']:.2f}")
+
+
+
+
+account = get_info()
+active = True
+
+
+while active:
+   display_info(account)
+   # I used strip and lower to make sure the input isnt entirely case sensitive as strip removes extra spaces and lower turns it lowercase to match my dictionary keys
+   account_type = input("What account would you like to access (Savings or Checking): ").strip().lower()
+   transaction_type = input("What type of transaction would you like to make (Deposit or Withdrawal): ").strip().lower()
+
+
+   try:
+       amount = round(float(input("How much money: ")), 2)
+   except ValueError:
+       print("\nInvalid amount entered. Please enter a number.")
+       continue
+
+
+   if account_type in ["savings", "checking"]:
+       if transaction_type == "deposit":
+           make_deposit(account, account_type, amount)
+       elif transaction_type == "withdrawal":
+           make_withdrawal(account, account_type, amount)
+       else:
+           print("\nI'm sorry, we cannot do that for you today.")
+   else:
+       print("\nI'm sorry, we cannot do that for you today.")
+
+
+   again = input("Would you like to make another transaction (y/n): ").strip().lower()
+   if again != "y":
+       display_info(account)
+       print("Thank you. Have a great day!")
+       active = False
+
+
+
